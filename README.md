@@ -4,7 +4,7 @@ This course gives you an introduction to modeling methods and simulation tools f
 
 The assignments of this course will be made as practical as possible in order to allow you to actually create from scratch short programs that will solve simple problems. Although programming will be used extensively in this course we do not require any advanced programming experience in order to complete it.
 
-### This repository consists of all the course content and solutions to the project exercises.
+## This repository consists of all the course content and solutions to the project exercises.
 
 ### Course content
 
