@@ -1,4 +1,4 @@
-# Simulation and modeling of natural processes
+# [Simulation and modeling of natural processes](https://www.coursera.org/learn/modeling-simulation-natural-processes#about)
 
 This course gives you an introduction to modeling methods and simulation tools for a wide range of natural phenomena. The different methodologies that will be presented here can be applied to very wide range of topics such as fluid motion, stellar dynamics, population evolution,... This course does not intend to go deeply into any numerical method or process and does not provide any recipe for the resolution of a particular problem. It is rather a basic guideline towards different methodologies that can be applied to solve any kind of problem and help you pick the one best suited for you.
 
