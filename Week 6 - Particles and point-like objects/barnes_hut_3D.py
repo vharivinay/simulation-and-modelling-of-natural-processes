@@ -6,7 +6,7 @@
 # E-mail contact: jonas.latt@unige.ch
 # Important: don't send questions about this code to the above e-mail address.
 # They will remain unanswered. Instead, use the resources of the MOOC.
-# 
+#
 # Copyright (C) 2016 University of Geneva
 # 24 rue du Général-Dufour
 # CH - 1211 Genève 4
@@ -39,11 +39,11 @@ plt.style.use('dark_background')
 my_path = os.path.dirname(__file__)
 
 class Node:
-# A node represents a body if it is an endnote (i.e. if node.child is None)
-# or an abstract node of the quad-tree if it has child.
+    # A node represents a body if it is an endnote (i.e. if node.child is None)
+    # or an abstract node of the quad-tree if it has child.
 
     def __init__(self, m, x, y, z):
-    # The initializer creates a child-less node (an actual body).
+        # The initializer creates a child-less node (an actual body).
         self.m = m
         # Instead of storing the position of a node, we store the mass times
         # position, m_pos. This makes it easier to update the center-of-mass.
@@ -52,27 +52,27 @@ class Node:
         self.child = None
 
     def into_next_quadrant(self):
-    # Places node into next-level quadrant and returns the quadrant number.
+        # Places node into next-level quadrant and returns the quadrant number.
         self.s = 0.5 * self.s   # s: side-length of current quadrant.
         return self._subdivide(1) + 2*self._subdivide(0)
 
     def pos(self):
-    # Physical position of node, independent of currently active quadrant.
+        # Physical position of node, independent of currently active quadrant.
         return self.m_pos / self.m
 
     def reset_to_0th_quadrant(self):
-    # Re-positions the node to the level-0 quadrant (full domain).
+        # Re-positions the node to the level-0 quadrant (full domain).
         # Side-length of the level-0 quadrant is 1.
         self.s = 1.0
         # Relative position inside the quadrant is equal to physical position.
         self.relpos = self.pos().copy()
 
     def dist(self, other):
-    # Distance between present node and another node.
+        # Distance between present node and another node.
         return norm(other.pos() - self.pos())
 
     def force_on(self, other):
-    # Force which the present node is exerting on a given body.
+        # Force which the present node is exerting on a given body.
         # To avoid numerical instabilities, introduce a short-distance cutoff.
         cutoff_dist = 0.002
         d = self.dist(other)
@@ -83,8 +83,8 @@ class Node:
             return (self.pos() - other.pos()) * (self.m*other.m / d**3)
 
     def _subdivide(self, i):
-    # Places node into next-level quadrant along direction i and recomputes
-    # the relative position relpos of the node inside this quadrant.
+        # Places node into next-level quadrant along direction i and recomputes
+        # the relative position relpos of the node inside this quadrant.
         self.relpos[i] *= 2.0
         if self.relpos[i] < 1.0:
             quadrant = 0
@@ -95,8 +95,8 @@ class Node:
 
 
 def add(body, node):
-# Barnes-Hut algorithm: Creation of the quad-tree. This function adds
-# a new body into a quad-tree node. Returns an updated version of the node.
+    # Barnes-Hut algorithm: Creation of the quad-tree. This function adds
+    # a new body into a quad-tree node. Returns an updated version of the node.
     # 1. If node n does not contain a body, put the new body b here.
     new_node = body if node is None else None
     # To limit the recursion depth, set a lower limit for the size of quadrant.
@@ -127,11 +127,11 @@ def add(body, node):
 
 
 def force_on(body, node, theta):
-# Barnes-Hut algorithm: usage of the quad-tree. This function computes
-# the net force on a body exerted by all bodies in node "node".
-# Note how the code is shorter and more expressive than the human-language
-# description of the algorithm.
-    # 1. If the current node is an external node, 
+    # Barnes-Hut algorithm: usage of the quad-tree. This function computes
+    # the net force on a body exerted by all bodies in node "node".
+    # Note how the code is shorter and more expressive than the human-language
+    # description of the algorithm.
+    # 1. If the current node is an external node,
     #    calculate the force exerted by the current node on b.
     if node.child is None:
         return node.force_on(body)
@@ -146,23 +146,22 @@ def force_on(body, node, theta):
 
 
 def verlet(bodies, root, theta, G, dt):
-# Execute a time iteration according to the Verlet algorithm.
+    # Execute a time iteration according to the Verlet algorithm.
     for body in bodies:
         force = G * force_on(body, root, theta)
         body.momentum += dt * force
-        body.m_pos += dt * body.momentum 
+        body.m_pos += dt * body.momentum
 
 
 def plot_bodies(bodies, i):
-# Write an image representing the current position of the bodies.
-# To create a movie with avconv or ffmpeg use the following command:
-# ffmpeg -r 15 -i bodies3D_%06d.png -q:v 0 bodies3D.avi
+    # Write an image representing the current position of the bodies.
+    # To create a movie with avconv or ffmpeg use the following command:
+    # ffmpeg -r 15 -i bodies3D_%06d.png -q:v 0 bodies3D.avi
     ax = plt.gcf().add_subplot(111, aspect='auto', projection='3d')
-    ax.scatter([b.pos()[0] for b in bodies], \
-    [b.pos()[1] for b in bodies], [b.pos()[2] for b in bodies])
+    ax.scatter([b.pos()[0] for b in bodies],[b.pos()[1] for b in bodies], [b.pos()[2] for b in bodies])
     ax.set_xlim([0., 1.0])
     ax.set_ylim([0., 1.0])
-    ax.set_zlim([0., 1.0]) 
+    ax.set_zlim([0., 1.0])
     ax.spines['right'].set_visible(False)
     ax.spines['top'].set_visible(False)
     ax.spines['left'].set_visible(False)
@@ -173,9 +172,7 @@ def plot_bodies(bodies, i):
     ax.axes.yaxis.set_ticklabels([])
     plt.gcf().savefig(my_path + '/figures3D/bodies_{0:06}.jpg'.format(i))
 
-
-
-######### MAIN PROGRAM ########################################################
+# ######## MAIN PROGRAM ########################################################
 
 # Theta-criterion of the Barnes-Hut algorithm.
 theta = 0.5
@@ -191,9 +188,9 @@ G = 4.e-6
 dt = 1.e-3
 # Number of bodies (the actual number is smaller, because all bodies
 # outside the initial radius are removed).
-numbodies = 1000
+numbodies = 100
 # Number of time-iterations executed by the program.
-max_iter = 500
+max_iter = 100
 # Frequency at which PNG images are written.
 img_iter = 20
 
@@ -204,18 +201,16 @@ posx = random.random(numbodies) *2.*ini_radius + 0.5-ini_radius
 posy = random.random(numbodies) *2.*ini_radius + 0.5-ini_radius
 posz = random.random(numbodies) *2.*ini_radius + 0.5-ini_radius
 # We only keep the bodies inside a circle of radius ini_radius.
-bodies = [ Node(mass, px, py, pz) for (px,py,pz) in zip(posx, posy, posz) \
-               if (px-0.5)**2 + (py-0.5)**2 < ini_radius**2 ]
+bodies = [Node(mass, px, py, pz) for (px,py,pz) in zip(posx, posy, posz) if (px-0.5)**2 + (py-0.5)**2 < ini_radius**2]
 
-#input("Press the <ENTER> key to continue...")
-#print ("here")
+# input("Press the <ENTER> key to continue...")
+# print ("here")
 # Initially, the bodies have a radial velocity of an amplitude proportional to
 # the distance from the center. This induces a rotational motion creating a
 # "galaxy-like" impression.
-for body in bodies: 
-    r = body.pos() - array([0.5, 0.5, body.pos()[2] ])
-    body.momentum = array([-r[1], r[0], 0.]) * \
-    mass*inivel*norm(r)/ini_radius
+for body in bodies:
+    r = body.pos() - array([0.5, 0.5, body.pos()[2]])
+    body.momentum = array([-r[1], r[0], 0.]) * mass*inivel*norm(r)/ini_radius
 # Principal loop over time iterations.
 for i in range(max_iter):
     # The quad-tree is recomputed at each iteration.
@@ -227,7 +222,7 @@ for i in range(max_iter):
     verlet(bodies, root, theta, G, dt)
     print(bodies[0].pos())
     # Output
-           
-    if i%img_iter==0:
+
+    if i % img_iter==0:
         print("Writing images at iteration {0}".format(i))
         plot_bodies(bodies, i//img_iter)
